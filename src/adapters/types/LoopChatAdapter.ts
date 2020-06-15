@@ -1,10 +1,17 @@
-import { Message, GuildMember } from 'discord.js';
+import { Message, GuildMember, Channel } from 'discord.js';
+import * as settings from './../../settings.json';
+
 import ChatAdapter from './../ChatAdapter';
 
 export default class LoopChatAdapter implements ChatAdapter {
 
+  static channels: Array<string> = settings.adapters.loop.channels;
+
   react(msg: Message): void {
-    this.punish(msg);
+    let member: GuildMember | null = msg.member;
+    if (member == null) return;
+
+    this.startMoving(member);
     msg.react("🤣");
   }
 
@@ -14,24 +21,29 @@ export default class LoopChatAdapter implements ChatAdapter {
     return false;
   }
 
-  punish(msg: Message): void {
-    if (msg.member == null) return;
-
-    let member: GuildMember | null = msg.member;
-
+  startMoving(member: GuildMember): void {
     this.setTimedInterval(() => {
-      console.log("It's working!");
-      let channel: string = member?.voice.channel?.id == "722067725530169394" ? "722067685118181378" : "722067725530169394";
+      let channel: string | null = this.getRandomChannel(member);
+      if (channel == null) return;
       member?.voice.setChannel(channel);
     }, 2000, 30000);
 
   }
 
+  getRandomChannel(member: GuildMember): string | null {
+    if (LoopChatAdapter.channels.length == 0) return null;
+    if (LoopChatAdapter.channels.length <= 1) return LoopChatAdapter.channels[0];
+
+    let randomInt: number = this.getRandomInt(LoopChatAdapter.channels.length);
+    let randomChannel: string = LoopChatAdapter.channels[randomInt];
+
+    let currentChannel: string | undefined = member?.voice.channel?.id;
+    return (randomChannel == currentChannel) ? this.getRandomChannel(member) : randomChannel;
+  }
+
   setTimedInterval(callback: any, delay: number, timeout: number): void {
     var id = setInterval(callback, delay);
-    setTimeout(() => {
-      clearInterval(id);
-    }, timeout);
+    setTimeout(() => clearInterval(id), timeout);
   }
 
   getRandomInt(max: number): number {
