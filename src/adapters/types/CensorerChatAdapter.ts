@@ -1,7 +1,12 @@
 import { Message, GuildMember } from 'discord.js';
-import ChatAdapter from './../ChatAdapter';
+import * as settings from './../../settings.json';
 
-export default class BadGuyChatAdapter implements ChatAdapter {
+import ChatAdapter from '../ChatAdapter';
+
+export default class CensorerChatAdapter implements ChatAdapter {
+
+  static censoredWords: Array<string> = settings.adapters.censorer.words;
+  static warnMessage: string = settings.adapters.censorer.message;
 
   react(msg: Message): void {
     this.punish(msg);
@@ -9,28 +14,21 @@ export default class BadGuyChatAdapter implements ChatAdapter {
   }
 
   activates(msg: Message): boolean {
-    let line: String = msg.content;
-    if (this.isBad(line) && line.includes("dango")) return true;
-    return false;
+    return this.isCensored(msg.content);
   }
 
   punish(msg: Message): void {
     if (msg.member == null) return;
 
     let member: GuildMember | null = msg.member;
-    msg.channel.send(member.displayName + " esas cosas no se pueden decir aqui.");
-    member.voice.kick();
+
+    let message: string = CensorerChatAdapter.warnMessage.replace("%name%", member.displayName)
+    msg.channel.send(message);
   }
 
-  isBad(line: String): boolean {
-    if (line.includes("odio")) return true;
-    if (line.includes("puto")) return true;
-    if (line.includes("feo")) return true;
-    if (line.includes("maldito")) return true;
-    if (line.includes("puta")) return true;
-    if (line.includes("mamaguevo")) return true;
-    if (line.includes("mamahuevo")) return true;
-    return false;
+  isCensored(line: String): boolean {
+    let matches: Array<String> = CensorerChatAdapter.censoredWords.filter(word => line.includes(word));
+    return matches.length != 0;
   }
 
 }
