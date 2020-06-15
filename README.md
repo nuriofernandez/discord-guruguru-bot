@@ -1,5 +1,12 @@
 # Discord GuruGuruBot
 
+## Installation guide
+
+```bash
+npm install
+code .
+```
+
 ## Setup settings
 
 Create a settings file at the `src` folder contaning the following lines:
