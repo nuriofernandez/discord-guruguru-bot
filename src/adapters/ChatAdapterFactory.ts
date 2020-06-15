@@ -1,8 +1,9 @@
-import DangoChatAdapter from './DangoChatAdapter';
-import BadGuyChatAdapter from './BadGuyChatAdapter';
-import LoopChatAdapter from './LoopChatAdapter';
-import ChatAdapter from './ChatAdapter';
 import { Message } from 'discord.js';
+
+import DangoChatAdapter from './types/DangoChatAdapter';
+import BadGuyChatAdapter from './types/BadGuyChatAdapter';
+import LoopChatAdapter from './types/LoopChatAdapter';
+import ChatAdapter from './ChatAdapter';
 
 export default class ChatAdapterFactory {
 

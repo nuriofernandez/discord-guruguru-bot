@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import ChatAdapter from './ChatAdapter';
+import ChatAdapter from './../ChatAdapter';
 
 export default class DangoChatAdapter implements ChatAdapter {
 

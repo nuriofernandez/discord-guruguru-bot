@@ -1,8 +1,8 @@
 import Discord from "discord.js";
 import * as settings from "./settings.json";
 
-import ChatAdapter from './ChatAdapter'
-import ChatAdapterFactory from './ChatAdapterFactory'
+import ChatAdapter from './adapters/ChatAdapter'
+import ChatAdapterFactory from './adapters/ChatAdapterFactory'
 
 const client = new Discord.Client();
 
